@@ -90,32 +90,43 @@ def main():
         result = execute_query(query, loaded_positional_index)
         print(f"Number of documents retrieved for query {i} using positional index: {len(result)}")
         print(f"Names of documents retrieved for query {i} using positional index: {' '.join([f'file{doc}.txt' for doc in result])}")
-# execute a phrase query
+# execute phrase query
 def execute_query(query, positional_index):
     query_terms=preprocess_text(query)
-    result_docs=set()
+    result_docs= set()
 
     # Init result with the first term
     if query_terms[0] in positional_index:
         result_docs=set(positional_index[query_terms[0]].keys())
+
     # Iterate over the query terms
     for term in query_terms[1:]:
         if term in positional_index:
             result_docs=result_docs.intersection(positional_index[term].keys())
-    # Check if the phrase exists
+        else:
+            # If the term doesn't exist in the positional index, return empty result hence avoid error outs
+            return set()
+
+    # Check if the phrase exists in the documents
     for doc_id in result_docs:
         positions=[]
         for term in query_terms:
-            # print(positional_index[term][doc_id])
-            positions.append(positional_index[term][doc_id])
-        for i in range(len(positions[0])):
-            start_pos=positions[0][i]
-            for j in range(1, len(positions)):
-                if start_pos + j not in positions[j]:
-                    break
+            if doc_id in positional_index[term]:
+                positions.append(positional_index[term][doc_id])
             else:
-                return result_docs
+                # If the term doesn't exist in the positional index for this document, we will move to the next document
+                break
+        else:
+            # If all terms exist in the positional index for this document, then check phrase positions
+            for i in range(len(positions[0])):
+                start_pos=positions[0][i]
+                for j in range(1, len(positions)):
+                    if start_pos + j not in positions[j]:
+                        break
+                else:
+                    return result_docs
     return set()
+
 
 if __name__ == "__main__":
     main()
