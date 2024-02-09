@@ -30,7 +30,6 @@ def preprocess_text(text):
 # create a positional index
 def create_positional_index(dataset_path):
     positional_index = {}
-
     for filename in os.listdir(dataset_path):
         if filename.endswith("_preprocessed.txt"):
             # Extract document ID from filename
@@ -39,7 +38,6 @@ def create_positional_index(dataset_path):
                 document_id=int(match.group(1))
             else:
                 continue  # Skip this file as not preprocessed
-            
             file_path = os.path.join(dataset_path, filename)
             with open(file_path, 'r', encoding='utf-8') as file:
                 tokens = file.read().split()
@@ -126,7 +124,5 @@ def execute_query(query, positional_index):
                 else:
                     return result_docs
     return set()
-
-
 if __name__ == "__main__":
     main()
