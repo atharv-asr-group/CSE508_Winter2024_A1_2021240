@@ -79,18 +79,18 @@ def execute_query(query, inverted_index, total_docs):
     
     # Init result set with documents having first term
     result=inverted_index.get(query_terms[0], set())
-    print(result)
-    print('result print')
+    # print(result)
+    # print('result print')
     # Iterate over query terms and operations
     for i in range(1, len(query_terms)):
         term = query_terms[i]
         if term in inverted_index:
             if operations[i - 1] == "AND":
-                print('from and')
+                # print('from and')
                 result = perform_AND(result, inverted_index[term])
             elif operations[i - 1] == "OR":
-                print('from or')
-                print(inverted_index[term])
+                # print('from or')
+                # print(inverted_index[term])
                 result = perform_OR(result, inverted_index[term])
             elif operations[i - 1] == "AND NOT":
                 result = perform_AND_NOT(result, inverted_index[term])
@@ -125,7 +125,11 @@ def main():
         query_sequence_final=' '.join(query_sequence)
         operations = input()
         queries.append((query_sequence_final, operations))
-    # print(queries)
+        # outputquery=query_sequence_final.split()
+        # operate=operations.split(', ')
+        # printquery=' '.join([f'{term} {op}' if i < len(operate) else term for i, (term, op) in enumerate(zip(outputquery, operate))])
+        # print(printquery)
+    print(queries)
 
     # execute queries and print results
         
